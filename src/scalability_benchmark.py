@@ -1,15 +1,4 @@
-"""
-Scalability benchmark with Spark MLlib.
 
-This is the Phase IV 'Scalability Test' deliverable: measure batch wall-clock
-time for the preprocessing and training stages as a function of allocated
-resources, here expressed as Spark shuffle partitions and parallelism.
-
-We sweep across {1, 2, 4, 8} partition levels. At each level a fresh Spark
-session is built with that many shuffle partitions, the feature stage and
-the Random Forest training stage are timed, and a CSV + two PNG plots are
-written for the report.
-"""
 
 import os
 import time
