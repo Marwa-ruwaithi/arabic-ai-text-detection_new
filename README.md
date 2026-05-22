@@ -1,19 +1,10 @@
-# Arabic AI-Generated Text Detection — Big Data Pipeline
-
-A distributed Big Data pipeline that detects AI-generated Arabic abstracts.
-
-**Course:** MSBDA-801 Big Data Analytics  
-**Student:** Marwah Abdullatif Alruwaithi  
-**University:** Taibah University  
-**Dataset:** [KFUPM-JRCAI/arabic-generated-abstracts](https://huggingface.co/datasets/KFUPM-JRCAI/arabic-generated-abstracts) (8,388 abstracts)
-
----
+# Arabic AI-Generated Text Detection, Big Data Pipeline
 
 ## Where Spark, Hadoop, and MapReduce are used
 
 This is the most important part of the project. Here is a clear map of where each Big Data technology is used:
 
-### 🔷 Apache Spark
+### Apache Spark
 
 | File | How Spark is used |
 |------|-------------------|
@@ -26,7 +17,7 @@ This is the most important part of the project. Here is a clear map of where eac
 
 **Every file starts a `SparkSession` and uses Spark for parallel computation.**
 
-### 🟧 Hadoop / HDFS
+### Hadoop / HDFS
 
 | Where | How it's used |
 |-------|---------------|
@@ -35,7 +26,7 @@ This is the most important part of the project. Here is a clear map of where eac
 | Execution | `spark-submit --master yarn` runs Spark on a Hadoop YARN cluster |
 | MapReduce I/O | The MapReduce outputs are saved as Hadoop-style text part-files |
 
-### 🟢 MapReduce (the model)
+### MapReduce (the model)
 
 The MapReduce paradigm is implemented explicitly in `mapreduce_jobs.py` with **3 jobs**:
 
@@ -100,8 +91,7 @@ chmod +x run_all.sh
 ./run_all.sh stream           # only streaming
 ```
 
-### Run on Hadoop YARN (if you have Hadoop installed)
-
+### Run on Hadoop YARN 
 ```bash
 # 1. Upload data to HDFS
 hdfs dfs -mkdir -p /user/marwah/arabic_aigt/processed
@@ -114,30 +104,4 @@ export MR_OUTPUT_DIR=hdfs:///user/marwah/arabic_aigt/mr_output
 spark-submit --master yarn --deploy-mode client src/mapreduce_jobs.py
 ```
 
----
 
-## Results (from the report)
-
-On the held-out test set (898 abstracts, 70/15/15 stratified split):
-
-| Model | Accuracy | Precision | Recall | F1 | ROC-AUC |
-|-------|----------|-----------|--------|----|---------|
-| Logistic Regression | 0.962 | 0.948 | 0.978 | 0.963 | 0.991 |
-| **Random Forest** | **0.970** | **0.980** | **0.960** | **0.970** | **0.994** |
-| Gradient Boosted Trees | 0.963 | 0.956 | 0.971 | 0.964 | 0.993 |
-
-Streaming layer averaged **770 rows/second** with **98 ms** per-batch latency.
-
----
-
-## My assigned features
-
-Using the formula `f(k·n + i)` with `i = 16` (my roster position) and `n = 21` (class size), my 5 features are:
-
-| Index | Feature | What it measures |
-|-------|---------|------------------|
-| f₁₆ | Number of words with repeated letters | Surface text pattern |
-| f₃₇ | Average words per paragraph | Paragraph structure |
-| f₅₈ | Top-100 embedding word count | Common-word frequency |
-| f₇₉ | Burstiness | Sentence-length variation |
-| f₁₀₀ | RoBERTa output probability | Language-model fit |
