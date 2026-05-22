@@ -1,38 +1,4 @@
-"""
-streaming_pipeline.py
-=====================
-Phase 5: Real-time deployment using Spark Structured Streaming.
 
-================================================================
-WHERE SPARK IS USED HERE:
-  - spark.readStream  : the streaming version of spark.read
-    This creates a DataFrame that updates as new files arrive.
-  - PipelineModel.load() : loads the trained Random Forest pipeline
-    from disk (saved by modeling.py).
-  - model.transform()  : scores incoming data in real-time.
-  - writeStream  : writes predictions to disk as they're computed.
-  - Trigger : runs the pipeline every 2 seconds.
-  - Checkpoint : saves the streaming state so we can resume
-    if the application crashes.
-
-WHERE HADOOP / HDFS IS USED (optional):
-  - Input/output paths can point to HDFS.
-  - Checkpoint directory works best on HDFS in production.
-
-HOW THIS SIMULATES A REAL STREAM:
-  In production, we'd use Kafka as the source. For this project,
-  we use Spark's "file source" which watches a folder for new files.
-  Whenever a new JSON file lands in stream_input/, Spark picks it up,
-  scores it, and writes predictions to stream_output/.
-
-HOW TO RUN:
-    # 1. Start the streaming query (runs forever):
-    python3 -m src.streaming_pipeline
-    
-    # 2. In another terminal, drop test files into the input folder:
-    python3 -m src.streaming_pipeline produce
-================================================================
-"""
 
 import os
 import sys
@@ -56,19 +22,17 @@ from src.feature_engineering import (
 )
 
 
-# ----------------------------------------------------------------
+
 # Folder paths for the streaming demo
-# ----------------------------------------------------------------
+
 
 STREAM_INPUT_DIR = os.path.join(PROCESSED_DIR, "stream_input")
 STREAM_OUTPUT_DIR = os.path.join(PROCESSED_DIR, "stream_output")
 STREAM_CHECKPOINT_DIR = os.path.join(PROCESSED_DIR, "stream_checkpoint")
 
 
-# ----------------------------------------------------------------
-# Schema: the structure of incoming JSON records
-# Spark needs to know this in advance for the streaming reader.
-# ----------------------------------------------------------------
+
+# Spark needs to know this in advance for the streaming reader
 
 INPUT_SCHEMA = T.StructType([
     T.StructField("text", T.StringType(), True),
@@ -77,9 +41,7 @@ INPUT_SCHEMA = T.StructType([
 ])
 
 
-# ----------------------------------------------------------------
 # Wrap our feature functions as Spark UDFs (same as in batch)
-# ----------------------------------------------------------------
 
 normalize_udf = F.udf(normalize_arabic, T.StringType())
 repeated_udf = F.udf(count_words_with_repeated_letters, T.IntegerType())
@@ -88,10 +50,8 @@ top100_udf = F.udf(count_top100_embedding_words, T.IntegerType())
 burst_udf = F.udf(burstiness, T.DoubleType())
 
 
-# ================================================================
 # PRODUCER: drops JSON files into the input folder
 # (simulates a Kafka producer for this demo)
-# ================================================================
 
 def produce_stream(n_files=10, rows_per_file=50):
     """Split the balanced dataset into 10 small JSON-Lines files
@@ -131,9 +91,7 @@ def produce_stream(n_files=10, rows_per_file=50):
         time.sleep(0.5)
 
 
-# ================================================================
 # CONSUMER: runs the Spark Structured Streaming query
-# ================================================================
 
 def run_streaming_query():
     spark = get_spark("ArabicAIGT-Streaming")
@@ -156,10 +114,7 @@ def run_streaming_query():
         os.makedirs(d, exist_ok=True)
     os.makedirs(STREAM_INPUT_DIR, exist_ok=True)
 
-    # ============================================================
-    # STREAMING SOURCE: watch the input folder for new JSON files
-    # spark.readStream is the streaming version of spark.read.
-    # ============================================================
+ 
     raw = (spark.readStream
                 .schema(INPUT_SCHEMA)        # tell Spark the column types
                 .option("multiLine", "false") # JSON Lines (1 record per line)
@@ -178,10 +133,8 @@ def run_streaming_query():
         .withColumn("roberta_probability", F.lit(0.0))  # disabled for speed
     )
 
-    # ============================================================
     # SCORING STAGE: use the trained pipeline to predict
-    # The pipeline already contains the VectorAssembler + RF model.
-    # ============================================================
+  
     scored = model.transform(featured)
 
     # Project to a clean output schema
@@ -214,10 +167,7 @@ def run_streaming_query():
     print("\nDrop JSON-Lines files into the watch directory to feed the query.")
     print("Running for 60 seconds...\n")
 
-    # ============================================================
-    # Run for 60 seconds, printing progress, then stop.
-    # In production we'd use query.awaitTermination() instead.
-    # ============================================================
+
     deadline = time.time() + 60
     while time.time() < deadline:
         time.sleep(2)
@@ -230,10 +180,6 @@ def run_streaming_query():
     query.stop()
     print("Streaming query stopped.")
 
-
-# ================================================================
-# ENTRY POINT
-# ================================================================
 
 def run():
     ensure_dirs()
