@@ -1,16 +1,5 @@
 """
 utils.py
-========
-Helper functions used by all the other modules in the project.
-
-================================================================
-WHAT IS HERE:
-  1) Paths    - where to read/write data, models, figures.
-  2) Spark    - factory function to create a SparkSession.
-  3) Hadoop   - helper to detect HDFS paths.
-  4) Arabic   - normalization, stop-word removal, ISRI stemming.
-================================================================
-"""
 
 import os
 import re
@@ -24,10 +13,6 @@ os.environ.setdefault("PYSPARK_PYTHON", sys.executable)
 os.environ.setdefault("PYSPARK_DRIVER_PYTHON", sys.executable)
 
 
-# ================================================================
-# 1) PROJECT PATHS
-# ================================================================
-# All paths are relative to the project root folder.
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RAW_DIR = os.path.join(PROJECT_ROOT, "data", "raw")
@@ -42,10 +27,7 @@ def ensure_dirs():
         os.makedirs(d, exist_ok=True)
 
 
-# ================================================================
 # 2) SPARK SESSION FACTORY
-# ================================================================
-# This is where Spark gets configured and started.
 
 def get_spark(app_name="ArabicAIGT", shuffle_partitions=4):
     """
@@ -78,9 +60,9 @@ def get_spark(app_name="ArabicAIGT", shuffle_partitions=4):
     return spark
 
 
-# ================================================================
+
 # 3) HADOOP / HDFS HELPER
-# ================================================================
+
 
 def is_hdfs_path(path):
     """
@@ -94,15 +76,7 @@ def is_hdfs_path(path):
     return path.startswith(("hdfs://", "s3://", "s3a://"))
 
 
-# ================================================================
 # 4) ARABIC TEXT PROCESSING
-# ================================================================
-# These functions clean Arabic text before feeding it to Spark/ML.
-
-# Arabic-specific regex patterns:
-#   - diacritics : the little marks above/below Arabic letters
-#   - non_arabic : anything that is not Arabic letters or whitespace
-#   - elongation : repeated characters like "كتاااب" -> "كتاب"
 
 ARABIC_DIACRITICS = re.compile(r"[\u064B-\u0652\u0670\u0640]")
 NON_ARABIC = re.compile(r"[^\u0600-\u06FF\s]")
@@ -140,8 +114,6 @@ def normalize_arabic(text):
     return text
 
 
-# Common Arabic stop-words (function words that don't carry meaning).
-# Removing them helps the model focus on content words.
 
 ARABIC_STOPWORDS = {
     "من", "في", "على", "إلى", "عن", "مع", "هذا", "هذه", "ذلك", "تلك",
