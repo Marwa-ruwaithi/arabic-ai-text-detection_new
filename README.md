@@ -1,4 +1,4 @@
-# Arabic AI-Generated Text Detection, Big Data Pipeline
+# Arabic AI-Generated Text Detection
 
 ## Where Spark, Hadoop, and MapReduce are used
 
