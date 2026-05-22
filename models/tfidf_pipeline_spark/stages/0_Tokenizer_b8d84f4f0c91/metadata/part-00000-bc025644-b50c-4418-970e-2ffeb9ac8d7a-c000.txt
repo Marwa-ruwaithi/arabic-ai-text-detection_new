@@ -1,0 +1,1 @@
+{"class":"org.apache.spark.ml.feature.Tokenizer","timestamp":1779442491770,"sparkVersion":"4.1.2","uid":"Tokenizer_b8d84f4f0c91","paramMap":{"inputCol":"text_stemmed","outputCol":"tokens"},"defaultParamMap":{"outputCol":"Tokenizer_b8d84f4f0c91__output"}}

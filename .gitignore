@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+*.log
+spark-warehouse/
+metastore_db/
+.venv/
+venv/
+*.parquet
+*.crc
+_SUCCESS
+.DS_Store
