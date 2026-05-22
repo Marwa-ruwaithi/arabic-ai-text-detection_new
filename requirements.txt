@@ -5,8 +5,7 @@ pyspark>=3.5.0,<4.0.0
 pandas>=2.0.0
 pyarrow>=14.0.0
 
-# Classical ML and metrics (used for evaluation plots and the
-# scikit-learn-compatible model.pkl files kept for backward compat)
+
 scikit-learn>=1.3.0
 scipy>=1.10.0
 
