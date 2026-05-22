@@ -1,5 +1,5 @@
 # Arabic AI-Generated Text Detection
----
+
 ## Where I Used Apache Spark
 
 | File | How I used it |
