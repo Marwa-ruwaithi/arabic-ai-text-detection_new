@@ -15,8 +15,6 @@ Here is a clear map of where each Big Data technology is used:
 | `streaming_pipeline.py` | Spark Structured Streaming for real-time scoring |
 | `scalability_benchmark.py` | Measures Spark performance across different partition counts |
 
-**Every file starts a `SparkSession` and uses Spark for parallel computation.**
-
 ### Hadoop / HDFS
 
 | Where | How it's used |
