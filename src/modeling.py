@@ -1,32 +1,3 @@
-"""
-modeling.py
-===========
-Phase 3b: Train 3 classifiers on the features using Spark MLlib.
-
-================================================================
-WHERE SPARK IS USED HERE:
-  - Spark MLlib (Spark's machine learning library) is used for:
-       * VectorAssembler  : combine our 5 features into ONE vector
-       * LogisticRegression
-       * RandomForestClassifier
-       * GBTClassifier (Gradient Boosted Trees)
-  - All training is DISTRIBUTED: Spark splits the training set
-    across CPU cores (or cluster nodes) and trains in parallel.
-  - We use Spark MLlib evaluators for metrics:
-       * BinaryClassificationEvaluator  : ROC-AUC
-       * MulticlassClassificationEvaluator : accuracy, precision, recall, F1
-
-WHERE HADOOP / HDFS IS USED:
-  - Trained models can be saved to HDFS using:
-       model.write().save("hdfs:///user/marwah/models/random_forest_spark")
-  - For this project they're saved locally.
-
-WHY SPARK MLLIB INSTEAD OF SCIKIT-LEARN:
-  Scikit-learn runs on ONE machine in memory.
-  Spark MLlib partitions data across executors and trains in parallel.
-  The project brief explicitly asks for Spark MLlib (5 points weight).
-================================================================
-"""
 
 import os
 import shutil
@@ -49,9 +20,7 @@ from pyspark.sql import functions as F
 from src.utils import get_spark, PROCESSED_DIR, MODELS_DIR, ensure_dirs
 
 
-# ================================================================
 # The 5 stylometric feature columns (computed in feature_engineering.py)
-# ================================================================
 
 STYLO_COLS = [
     "repeated_letter_words",
@@ -62,9 +31,7 @@ STYLO_COLS = [
 ]
 
 
-# ================================================================
 # HELPERS
-# ================================================================
 
 def stratified_split(df, seed=42):
     """
@@ -151,9 +118,7 @@ def save_spark_model(model, name):
     model.write().overwrite().save(path)
 
 
-# ================================================================
 # MAIN
-# ================================================================
 
 def run():
     ensure_dirs()
