@@ -30,11 +30,10 @@ The MapReduce paradigm is implemented explicitly in `mapreduce_jobs.py` with **3
 
 | Job | Map phase | Reduce phase |
 |-----|-----------|--------------|
-| **Job 1: Word Count** | `(text) → [(word, 1), ...]` | `sum counts per word` |
-| **Job 2: Bigram Count** | `(text) → [((w₁, w₂), 1), ...]` | `sum counts per bigram` |
-| **Job 3: Hapax Ratio (2-stage)** | Stage A = Job 1; Stage B re-keys to "hapax" or "total" | `sum per category` |
+| **Word Count** | `(text) → [(word, 1), ...]` | `sum counts per word` |
+| **Bigram Count** | `(text) → [((w₁, w₂), 1), ...]` | `sum counts per bigram` |
+| **Hapax Ratio (2-stage)** | Stage A = Job 1; Stage B re-keys to "hapax" or "total" | `sum per category` |
 
-Each job prints `[Map]`, `[Shuffle]`, `[Reduce]` so you can see the phases happen step by step.
 
 ---
 
