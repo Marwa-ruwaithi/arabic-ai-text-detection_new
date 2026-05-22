@@ -1,46 +1,4 @@
-"""
-mapreduce_jobs.py
-=================
-MapReduce jobs for detecting AI-generated Arabic text.
 
-This file does 3 MapReduce jobs using PySpark RDDs:
-    Job 1: Word Count
-    Job 2: Bigram Count  
-    Job 3: Hapax Legomena Ratio (two-stage MapReduce)
-
-================================================================
-WHERE SPARK IS USED:
-  - SparkSession is created to start the Spark engine.
-  - SparkContext (sc) is used to run RDD operations.
-  - flatMap() = Map phase
-  - reduceByKey() = Shuffle + Reduce phases
-  - count(), takeOrdered(), collectAsMap() = Actions to get results.
-
-WHERE HADOOP / HDFS IS USED:
-  - Input file is read from HDFS path:
-      hdfs:///user/marwah/arabic_aigt/processed/processed_abstracts.parquet
-  - Output is written back to HDFS:
-      hdfs:///user/marwah/arabic_aigt/mr_output/...
-  - HDFS is the distributed file system used by Hadoop.
-  - We can switch between HDFS and local file system using
-    the environment variable MR_INPUT_PATH.
-
-WHERE MAPREDUCE IS USED:
-  - The three classical phases of MapReduce are explicit:
-       MAP     -> emit (key, value) pairs           (flatMap)
-       SHUFFLE -> group all values by key           (reduceByKey)
-       REDUCE  -> combine values per key            (reduceByKey)
-  - Each job below prints the size of data after each phase
-    so we can see MapReduce working step by step.
-================================================================
-
-How to run:
-    # local file system:
-    python3 -m src.mapreduce_jobs
-
-    # on Hadoop (HDFS):
-    spark-submit --master yarn src/mapreduce_jobs.py
-"""
 
 import os
 import sys
@@ -67,11 +25,7 @@ TOP_N_WORDS = 20
 TOP_N_BIGRAMS = 20
 
 
-# ================================================================
-# MAP FUNCTIONS
-# These are the "mappers" of MapReduce.
-# Each one takes ONE document and emits (key, value) pairs.
-# ================================================================
+
 
 def map_words(document):
     """
@@ -136,10 +90,10 @@ def map_hapax(word_count_pair):
     return pairs
 
 
-# ================================================================
+
 # REDUCE FUNCTION
-# Used by all three jobs - just sums values for the same key.
-# ================================================================
+
+
 
 def reduce_sum(a, b):
     """
@@ -159,9 +113,9 @@ def reduce_sum(a, b):
     return a + b
 
 
-# ================================================================
+
 # HELPER: detect if path is HDFS or local file system
-# ================================================================
+
 
 def is_hdfs_path(path):
     """Return True if the path lives on HDFS (or other distributed FS)."""
@@ -179,9 +133,9 @@ def wipe_output_dir(path):
         shutil.rmtree(path)
 
 
-# ================================================================
+
 # JOB 1: WORD COUNT
-# ================================================================
+
 
 def run_word_count(docs_rdd, output_path):
     """
@@ -237,9 +191,8 @@ def run_word_count(docs_rdd, output_path):
     return word_counts, total_tokens, vocab_size
 
 
-# ================================================================
 # JOB 2: BIGRAM COUNT
-# ================================================================
+
 
 def run_bigram_count(docs_rdd, output_path):
     """
@@ -278,9 +231,9 @@ def run_bigram_count(docs_rdd, output_path):
     return bigram_counts
 
 
-# ================================================================
+
 # JOB 3: HAPAX LEGOMENA RATIO (TWO-STAGE MAPREDUCE)
-# ================================================================
+
 
 def run_hapax_ratio(word_counts_rdd, output_path):
     """
@@ -337,9 +290,8 @@ def run_hapax_ratio(word_counts_rdd, output_path):
     return hapax_n, total_n, ratio
 
 
-# ================================================================
-# MAIN: ties everything together
-# ================================================================
+# MAIN
+
 
 def main():
     """Run all three MapReduce jobs, once per class (original / generated)."""
@@ -413,7 +365,6 @@ def main():
     print("All MapReduce jobs finished successfully.")
     print("=" * 72)
 
-    # ---- Stop Spark cleanly ----
     spark.stop()
 
 
