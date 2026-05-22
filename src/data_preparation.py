@@ -1,30 +1,4 @@
-"""
-data_preparation.py
-===================
-Phase 2 of the pipeline: clean and prepare the Arabic abstracts.
 
-================================================================
-WHERE SPARK IS USED HERE:
-  - We load the raw data as a Spark DataFrame (distributed table).
-  - We apply our Arabic cleaning functions as Spark UDFs
-    (User-Defined Functions) so they run in parallel across partitions.
-  - We use Spark's sampleBy() for stratified under-sampling
-    (to balance the classes).
-  - The final result is saved as Parquet (Spark-friendly format).
-
-WHERE HADOOP / HDFS IS USED:
-  - Output Parquet can be saved directly to HDFS by setting
-    the path to "hdfs:///user/marwah/...".
-
-WHAT THIS FILE DOES:
-  Step 1: Load the binary-labelled parquet (from data_acquisition.py)
-  Step 2: Apply 3 Arabic-cleaning UDFs in sequence:
-            normalize_arabic  ->  remove_stopwords  ->  isri_stem
-  Step 3: Balance the classes (because we have 11x more
-          generated examples than human ones).
-  Step 4: Save the cleaned + balanced data to Parquet.
-================================================================
-"""
 
 import os
 from pyspark.sql import functions as F
