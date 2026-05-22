@@ -10,14 +10,6 @@ from src.utils import (
 )
 
 
-# ----------------------------------------------------------------
-# Wrap our pure-Python Arabic functions as Spark UDFs.
-#
-# A UDF (User Defined Function) is a Python function that Spark
-# can apply to every row in a DataFrame, in parallel across the
-# cluster. This is how we make our custom logic distributed.
-# ----------------------------------------------------------------
-
 normalize_udf = F.udf(normalize_arabic, T.StringType())
 remove_stop_udf = F.udf(remove_stopwords, T.StringType())
 isri_stem_udf = F.udf(isri_stem, T.StringType())
