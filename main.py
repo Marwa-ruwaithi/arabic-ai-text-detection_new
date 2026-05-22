@@ -1,14 +1,3 @@
-"""
-Main pipeline entry point.
-
-Runs the full Big Data pipeline phase by phase. Equivalent to run_all.sh
-but callable from inside an IDE / notebook.
-
-Usage:
-    python main.py                # run every phase
-    python main.py mapreduce      # run only the MapReduce phase
-    python main.py prep features  # run a custom subset
-"""
 
 import sys
 import time
