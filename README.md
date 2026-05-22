@@ -2,7 +2,7 @@
 
 ## Where Spark, Hadoop, and MapReduce are used
 
-This is the most important part of the project. Here is a clear map of where each Big Data technology is used:
+Here is a clear map of where each Big Data technology is used:
 
 ### Apache Spark
 
