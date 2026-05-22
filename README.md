@@ -9,7 +9,7 @@ Here is a clear map of where each Big Data technology is used:
 | File | How Spark is used |
 |------|-------------------|
 | `data_preparation.py` | Spark DataFrames + UDFs to clean Arabic text in parallel |
-| `mapreduce_jobs.py` | Spark RDDs with `flatMap` → `reduceByKey` (MapReduce model) |
+| `mapreduce_jobs.py` | Spark RDDs with `flatMap` -> `reduceByKey` (MapReduce model) |
 | `feature_engineering.py` | Spark UDFs for stylometric features + Spark MLlib for TF-IDF |
 | `modeling.py` | Spark MLlib for distributed training of 3 classifiers |
 | `streaming_pipeline.py` | Spark Structured Streaming for real-time scoring |
